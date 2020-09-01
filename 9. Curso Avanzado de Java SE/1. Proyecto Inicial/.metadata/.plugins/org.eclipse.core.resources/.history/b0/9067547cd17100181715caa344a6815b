@@ -1,0 +1,34 @@
+package com.anncode.amazonviewer.dao;
+
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import static com.anncode.amazonviewer.db.DataBase.*;
+
+import com.anncode.amazonviewer.db.IDBConnection;
+import com.anncode.amazonviewer.model.Movie;
+import com.mysql.jdbc.PreparedStatement;
+
+public interface MovieDao extends IDBConnection {
+	
+	default Movie setMovieViewd(Movie movie) {
+		
+		return movie;
+	}
+	
+	default ArrayList<Movie> read(){
+		ArrayList<Movie> movies = new ArrayList();
+		try (Connection connection = connectToDataBase()){
+			String query = "SELECT * FROM " + 
+			PreparedStatement preparedStatement = connection.prepareStatement(sql)
+		} catch (SQLException e) {
+			// TODO: handle exception
+		}
+		return movies;
+	}
+	
+	private Boolean getMovieViewed() {
+		return Boolean.FALSE;
+	}
+
+}

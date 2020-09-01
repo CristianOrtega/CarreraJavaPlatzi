@@ -1,0 +1,5 @@
+package com.anncode.amazonviewer.dao;
+
+public interface MovieDao {
+
+}

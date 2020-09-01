@@ -1,0 +1,5 @@
+INDEX VERSION 1.130+C:\Proyectos\Curso Java Avanzado\1. Proyecto Inicial\.metadata\.plugins\org.eclipse.jdt.core
+1277001434.index
+756117498.index
+3095787189.index
+2417640386.index

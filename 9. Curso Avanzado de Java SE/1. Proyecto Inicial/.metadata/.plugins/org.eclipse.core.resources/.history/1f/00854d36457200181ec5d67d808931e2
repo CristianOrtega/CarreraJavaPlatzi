@@ -1,0 +1,12 @@
+package com.cristianortega.lambdas;
+
+import com.cristianortega.interfaces.*;
+
+public class Main {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+
+	}
+
+}

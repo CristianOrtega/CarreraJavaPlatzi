@@ -1,0 +1,12 @@
+package com.anncode.amazonviewer.dao;
+
+import com.anncode.amazonviewer.model.Movie;
+
+public interface MovieDao {
+	
+	default Movie setMovieViewd(Movie movie) {
+		
+		return movie;
+	}
+
+}

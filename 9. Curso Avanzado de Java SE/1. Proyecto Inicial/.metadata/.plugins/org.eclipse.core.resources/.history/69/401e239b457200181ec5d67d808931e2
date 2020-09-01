@@ -1,0 +1,20 @@
+package com.cristianortega.lambdas;
+
+import com.cristianortega.interfaces.*;
+
+public class Main {
+
+	public static void main(String[] args) {
+		OnOneListener onListener = new OnOneListener() {
+			@Override
+			public void onOne(String message) {
+				System.out.println("One: " + message);
+			}
+		};
+		OnOneListener onListenerTwo = (String message) -> {
+			
+		};
+		
+		onListener.onOne("Sin Lambda :(");
+	}
+}

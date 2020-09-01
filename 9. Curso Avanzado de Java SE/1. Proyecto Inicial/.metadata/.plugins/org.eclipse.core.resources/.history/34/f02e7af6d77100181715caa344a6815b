@@ -1,0 +1,115 @@
+package com.anncode.amazonviewer.dao;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import static com.anncode.amazonviewer.db.DataBase.*;
+
+import com.anncode.amazonviewer.db.IDBConnection;
+import com.anncode.amazonviewer.model.Movie;
+
+public interface MovieDAO extends IDBConnection {
+
+	default Movie setMovieViewed(Movie movie) {
+		try (Connection connection = connectToDB()) {
+			Statement statement = connection.createStatement();
+			String query = "INSERT INTO " + TVIEWED + " (" + ID_TMATERIALS + ", " + TVIEWED_IDELEMENT + ", "
+					+ TVIEWED_IDUSUARIO + ")" + " VALUES(" + ID_TMATERIALS[0] + ", " + movie.getId() + ", "
+					+ TUSER_IDUSUARIO + ")";
+			if(statement.executeUpdate(query) > 0) {
+				System.out.println("Se marco en visto");
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return movie;
+	}
+
+	default ArrayList<Movie> read() {
+		ArrayList<Movie> movies = new ArrayList();
+		try (Connection connection = connectToDB()) {
+			String query = "SELECT * FROM " + TMOVIE;
+			PreparedStatement preparedStatement = connection.prepareStatement(query);
+			ResultSet rs = preparedStatement.executeQuery();
+			while (rs.next()) {
+				Movie movie = new Movie(rs.getString(TMOVIE_TITLE), rs.getString(TMOVIE_GENRE),
+						rs.getString(TMOVIE_CREATOR), Integer.valueOf(rs.getString(TMOVIE_DURATION)),
+						Short.valueOf(rs.getString(TMOVIE_YEAR)));
+
+				movie.setId(Integer.valueOf(rs.getString(TMOVIE_ID)));
+				movie.setViewed(
+						getMovieViewed(preparedStatement, connection, Integer.valueOf(rs.getString(TMOVIE_ID))));
+				movies.add(movie);
+			}
+		} catch (SQLException e) {
+			// TODO: handle exception
+		}
+		return movies;
+	}
+
+	private Boolean getMovieViewed(PreparedStatement preparedStatement, Connection connection, int id_movie) {
+		ResultSet rs = null;
+		Boolean viewed = Boolean.FALSE;
+		String query = "SELECT * FROM " + TVIEWED + "WHERE " + TVIEWED_IDMATERIAL + " = ?" + "AND " + TVIEWED_IDELEMENT
+				+ " = ?" + "AND " + TVIEWED_IDUSUARIO + " = ?";
+		try {
+			preparedStatement = connection.prepareStatement(query);
+			preparedStatement.setInt(1, ID_TMATERIALS[0]);
+			preparedStatement.setInt(2, id_movie);
+			preparedStatement.setInt(3, TUSER_IDUSUARIO);
+			rs = preparedStatement.executeQuery();
+			viewed = rs.next();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return viewed;
+	}
+	
+	default ArrayList<Movie> getMoviesViewedByDate(Date date) {
+		ArrayList<Movie> movies = new ArrayList<>();
+
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(new Date());
+		String fechaBase = cal.get(Calendar.YEAR) + "-" + (cal.get(Calendar.MONTH) + 1) + "-"
+				+ cal.get(Calendar.DAY_OF_MONTH);
+
+		try (Connection connection = connectToDB()) {
+			StringBuilder query = new StringBuilder();
+			query.append("SELECT * ");
+			query.append("FROM ").append(T_VIEWED).append(" v ");
+			query.append("LEFT JOIN ").append(T_MOVIE).append(" m ON m.").append(T_MOVIE_ID).append("=").append("v.")
+					.append(T_VIEWED_ID_ELEMENT);
+			query.append(" WHERE v.").append(T_VIEWED_ID_MATERIAL).append("=").append(Material.MOVIE.getTipo());
+			query.append(" AND v.").append(T_VIEWED_ID_USER).append("=").append(ID_USUARIO);
+			query.append(" AND v.").append(T_VIEWED_DATE_VIEWED).append(">?");
+			query.append(" AND v.").append(T_VIEWED_DATE_VIEWED).append("<?");
+
+			PreparedStatement ps = connection.prepareStatement(query.toString());
+			ps.setString(1, fechaBase + " 00:00:00");
+			ps.setString(2, fechaBase + " 23:59:59");
+
+			// System.out.println("query: " + ps.toString());
+
+			ResultSet rs = ps.executeQuery();
+
+			while (rs.next()) {
+				Movie movie = new Movie(rs.getString("m." + T_MOVIE_TITLE), rs.getString("m." + T_MOVIE_GENRE),
+						rs.getString("m." + T_MOVIE_CREATOR), rs.getInt("m." + T_MOVIE_DURATION),
+						rs.getShort("m." + T_MOVIE_YEAR));
+				movie.setId(rs.getInt("m." + T_MOVIE_ID));
+				movie.setViewed(getMovieViewed(ps, connection, movie.getId()));
+
+				movies.add(movie);
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return movies;
+	}
+
+}

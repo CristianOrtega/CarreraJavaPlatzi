@@ -1,0 +1,5 @@
+package com.cristianortega.interfaces;
+
+public interface OnOneListener {
+
+}

@@ -1,0 +1,42 @@
+/MKC_CLV_Commons/dist/
+/MKC_CLV_Dao/dist/
+/MKC_CLV_Dao_Gen/dist/
+/MKC_CLV_DataWS/dist/
+/MKC_CLV_DataWS_Gen/dist/
+/MKC_CLV_Entity_Gen/dist/
+/MKC_CLV_Entity/dist/
+/MKC_CLV_Hibernate/dist/
+/MKC_CLV_Hibernate_Gen/dist/
+/MKC_CLV_HibernateMapp_Gen/dist/
+/MKC_CLV_IService_Gen/dist/
+/MKC_CLV_IService/dist/
+/MKC_CLV_Service/dist/
+/MKC_CLV_Service_Gen/dist/
+/MKC_CLV_WS/dist/
+/MKC_CLV_WS_Gen/dist/
+
+/target/
+!.mvn/wrapper/maven-wrapper.jar
+
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+/build/
